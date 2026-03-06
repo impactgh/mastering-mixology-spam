@@ -57,36 +57,43 @@ public class WorkflowManager {
 	}
 
 	private void addMixingStepsForRecipe(PotionRecipe recipe) {
-		// Step 1: Mox lever (if needed)
-		if (recipe.getMoxAmount() > 0) {
+		// Add lever pulls based on recipe requirements
+		// Each lever adds 10 paste, so we need to pull multiple times for recipes requiring more
+		
+		int moxPulls = recipe.getMoxAmount() / 10;
+		int agaPulls = recipe.getAgaAmount() / 10;
+		int lyePulls = recipe.getLyeAmount() / 10;
+
+		// Step 1: Mox lever pulls
+		for (int i = 0; i < moxPulls; i++) {
 			allSteps.add(new WorkflowStep(
 				WorkflowPhase.MIXING,
 				recipe,
 				null,
 				WorkflowStep.HighlightTarget.MOX_LEVER,
-				String.format("Add %d Mox for %s", recipe.getMoxAmount(), recipe.getShortCode())
+				String.format("Pull Mox lever for %s (%d/%d)", recipe.getShortCode(), i + 1, moxPulls)
 			));
 		}
 
-		// Step 2: Aga lever (if needed)
-		if (recipe.getAgaAmount() > 0) {
+		// Step 2: Aga lever pulls
+		for (int i = 0; i < agaPulls; i++) {
 			allSteps.add(new WorkflowStep(
 				WorkflowPhase.MIXING,
 				recipe,
 				null,
 				WorkflowStep.HighlightTarget.AGA_LEVER,
-				String.format("Add %d Aga for %s", recipe.getAgaAmount(), recipe.getShortCode())
+				String.format("Pull Aga lever for %s (%d/%d)", recipe.getShortCode(), i + 1, agaPulls)
 			));
 		}
 
-		// Step 3: Lye lever (if needed)
-		if (recipe.getLyeAmount() > 0) {
+		// Step 3: Lye lever pulls
+		for (int i = 0; i < lyePulls; i++) {
 			allSteps.add(new WorkflowStep(
 				WorkflowPhase.MIXING,
 				recipe,
 				null,
 				WorkflowStep.HighlightTarget.LYE_LEVER,
-				String.format("Add %d Lye for %s", recipe.getLyeAmount(), recipe.getShortCode())
+				String.format("Pull Lye lever for %s (%d/%d)", recipe.getShortCode(), i + 1, lyePulls)
 			));
 		}
 
