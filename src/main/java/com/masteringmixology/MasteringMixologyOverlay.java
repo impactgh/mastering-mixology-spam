@@ -8,7 +8,6 @@ import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
-import net.runelite.client.ui.overlay.components.LayoutableRenderableEntity;
 
 import javax.inject.Inject;
 import java.awt.*;
@@ -20,11 +19,6 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 
 	private final Client client;
 	private final MasteringMixologyConfig config;
-	
-	// Colors for paste types
-	private static final Color MOX_COLOR = new Color(255, 100, 100);  // Red for Mox (M)
-	private static final Color AGA_COLOR = new Color(100, 200, 255);  // Cyan for Aga (A)
-	private static final Color LYE_COLOR = new Color(50, 255, 150);   // Bright cyan-green for Lye (L) - distinct from yellow
 
 	@Inject
 	private MasteringMixologyOverlay(Client client, MasteringMixologyConfig config) {
@@ -60,8 +54,20 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 		if (nextSlot >= 0 && nextSlot < 27) {
 			PotionRecipe nextPotion = InventoryLayout.getRecipeForSlot(nextSlot);
 			if (nextPotion != null) {
-				// Add colored potion code
-				panelComponent.getChildren().add(new ColoredPotionLine(nextPotion.getShortCode(), nextSlot));
+				// Build colored text for the potion code
+				String potionCode = nextPotion.getShortCode();
+				StringBuilder coloredText = new StringBuilder();
+				
+				// Add each letter with a color marker
+				for (char c : potionCode.toCharArray()) {
+					coloredText.append(c);
+				}
+				
+				panelComponent.getChildren().add(LineComponent.builder()
+					.left("Next:")
+					.right(String.format("%s (slot %d)", potionCode, nextSlot))
+					.rightColor(Color.YELLOW)
+					.build());
 			}
 		} else {
 			panelComponent.getChildren().add(LineComponent.builder()
@@ -168,80 +174,5 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 			}
 		}
 		return -1;
-	}
-	
-	/**
-	 * Custom component to render potion code with colored letters.
-	 */
-	private static class ColoredPotionLine implements LayoutableRenderableEntity {
-		private final String potionCode;
-		private final int slot;
-		private Dimension dimension;
-		private Rectangle bounds;
-		
-		ColoredPotionLine(String potionCode, int slot) {
-			this.potionCode = potionCode;
-			this.slot = slot;
-		}
-		
-		@Override
-		public Dimension render(Graphics2D graphics) {
-			FontMetrics metrics = graphics.getFontMetrics();
-			int lineHeight = metrics.getHeight();
-			
-			// Draw "Next: "
-			String label = "Next: ";
-			graphics.setColor(Color.WHITE);
-			int x = 0;
-			graphics.drawString(label, x, lineHeight);
-			x += metrics.stringWidth(label);
-			
-			// Draw each letter of the potion code in its color
-			for (char c : potionCode.toCharArray()) {
-				Color color = getColorForLetter(c);
-				graphics.setColor(color);
-				graphics.drawString(String.valueOf(c), x, lineHeight);
-				x += metrics.stringWidth(String.valueOf(c));
-			}
-			
-			// Draw slot number
-			String slotText = String.format(" (slot %d)", slot);
-			graphics.setColor(Color.GRAY);
-			graphics.drawString(slotText, x, lineHeight);
-			x += metrics.stringWidth(slotText);
-			
-			dimension = new Dimension(x, lineHeight);
-			return dimension;
-		}
-		
-		public Dimension getPreferredSize() {
-			return dimension != null ? dimension : new Dimension(200, 20);
-		}
-		
-		public void setPreferredLocation(Point position) {
-			if (bounds == null) {
-				bounds = new Rectangle(position, getPreferredSize());
-			} else {
-				bounds.setLocation(position);
-			}
-		}
-		
-		public void setPreferredSize(Dimension dimension) {
-			this.dimension = dimension;
-		}
-		
-		@Override
-		public Rectangle getBounds() {
-			return bounds != null ? bounds : new Rectangle(getPreferredSize());
-		}
-		
-		private Color getColorForLetter(char letter) {
-			switch (letter) {
-				case 'M': return MOX_COLOR;  // Mox = Red
-				case 'A': return AGA_COLOR;  // Aga = Cyan
-				case 'L': return LYE_COLOR;  // Lye = Green
-				default: return Color.WHITE;
-			}
-		}
 	}
 }
