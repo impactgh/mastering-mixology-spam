@@ -174,7 +174,7 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 		// Calculate position - we need to find where the "Next:" line is rendered
 		Rectangle bounds = panelComponent.getBounds();
 		int baseX = bounds.x + 10; // Left padding
-		int baseY = bounds.y + 39; // Title (18) + spacing (4) + Next line baseline (18)
+		int baseY = bounds.y + 36; // Title (18) + spacing (4) + Next line baseline (18)
 		
 		FontMetrics metrics = graphics.getFontMetrics();
 		

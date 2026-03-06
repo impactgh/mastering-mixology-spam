@@ -42,8 +42,8 @@ public class MixologyItemIDs {
 			case 30017: case 30027: return PotionRecipe.LLL;
 			case 30013: case 30023: return PotionRecipe.MML;
 			case 30020: case 30030: return PotionRecipe.MAL;
-			case 30014: case 30024: return PotionRecipe.MMM;
-			case 30011: case 30021: return PotionRecipe.AAA;
+			case 30011: case 30021: return PotionRecipe.MMM;
+			case 30014: case 30024: return PotionRecipe.AAA;
 			default: return null;
 		}
 	}
