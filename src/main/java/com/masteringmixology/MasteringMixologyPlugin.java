@@ -8,6 +8,7 @@ import net.runelite.api.GameState;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.Notifier;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -87,6 +88,25 @@ public class MasteringMixologyPlugin extends Plugin {
 		overlayManager.remove(speedUpOverlay);
 		panel = null;
 		resetTracking();
+	}
+
+	@Subscribe
+	public void onVarbitChanged(VarbitChanged event) {
+		if (!inMixologyArea) {
+			return;
+		}
+
+		// TODO: Implement varbit detection once IDs are found
+		// Example:
+		// int vesselMox = client.getVarbitValue(MixologyVarbits.VESSEL_MOX);
+		// int vesselAga = client.getVarbitValue(MixologyVarbits.VESSEL_AGA);
+		// int vesselLye = client.getVarbitValue(MixologyVarbits.VESSEL_LYE);
+		
+		// If vessel contents changed, advance workflow
+		// if (vesselMox > 0 || vesselAga > 0 || vesselLye > 0) {
+		//     // Lever was pulled
+		//     advanceWorkflowStep();
+		// }
 	}
 
 	@Subscribe

@@ -92,17 +92,40 @@ Access the plugin settings in RuneLite's configuration panel:
 - **Show Speed-Up Indicator**: Visual cues for when to click for speed boosts
 - **Speed-Up Sound**: Audio cue for speed-up windows
 
-## Object ID Setup
+## Current Status
 
-For highlighting features to work, you need to configure object IDs:
+The plugin is **fully functional** for manual tracking! 
 
-1. Install RuneLite's **Developer Tools** plugin
-2. Enable **Object Inspector**
-3. Find object IDs in-game (see [OBJECT_ID_SETUP.md](OBJECT_ID_SETUP.md))
-4. Update `MixologyObjectIDs.java` with actual IDs
-5. Rebuild the plugin
+### Working Features (No Setup Required)
+- ✅ Spam tech workflow guidance
+- ✅ Step-by-step instructions
+- ✅ Progress tracking (27 potions)
+- ✅ Recipe recommendations
+- ✅ Station ordering (Alembic → Agitator → Retort)
+- ✅ Manual advancement ("Next Step" button)
+- ✅ Side panel with potion buttons
+- ✅ In-game overlay
 
-The plugin works perfectly for manual tracking without this setup!
+### Features Requiring Setup
+- ⚙️ Automatic lever detection (needs varbit IDs)
+- ⚙️ Object highlighting (needs object IDs)
+- ⚙️ Digweed notifications (needs object ID)
+- ⚙️ Region detection (needs region ID)
+
+See [DETECTION_SETUP.md](DETECTION_SETUP.md) for how to enable automatic detection.
+
+## How to Use (Manual Mode)
+
+The plugin works great without any setup! Just follow the instructions:
+
+1. **Install & Run** the plugin
+2. **Open the side panel** - Find "Mastering Mixology Helper"
+3. **Follow the overlay** - It shows current phase and next step
+4. **Click "Next Step"** after each action (or use potion buttons)
+5. **Watch the progress** - Shows X/27 potions made
+6. **Spam conveyor** when it says "READY TO SUBMIT"!
+
+The workflow guides you through the optimal order automatically.
 
 ## How to Use
 
