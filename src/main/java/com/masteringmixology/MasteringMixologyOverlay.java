@@ -65,11 +65,10 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 				currentPotionCode = nextPotion.getShortCode();
 				currentSlot = nextSlot;
 				
-				// Add placeholder line - we'll draw over it with colored text
+				// Add a simple line component that will be replaced by colored text
 				panelComponent.getChildren().add(LineComponent.builder()
 					.left("Next:")
-					.right(String.format("%s (slot %d)", currentPotionCode, nextSlot))
-					.rightColor(new Color(0, 0, 0, 0)) // Transparent - we'll draw over it
+					.right("") // Empty - we'll draw colored text over it
 					.build());
 			}
 		} else {
@@ -172,17 +171,17 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 	}
 	
 	private void drawColoredPotionCode(Graphics2D graphics) {
-		// Calculate position - after "Next: " text on the second line
-		int baseX = panelComponent.getBounds().x + 10; // Left padding
-		int baseY = panelComponent.getBounds().y + 30; // Title + one line
+		// Calculate position - we need to find where the "Next:" line is rendered
+		Rectangle bounds = panelComponent.getBounds();
+		int baseX = bounds.x + 10; // Left padding
+		int baseY = bounds.y + 45; // Title (20) + spacing (5) + Next line (20)
 		
 		FontMetrics metrics = graphics.getFontMetrics();
 		
-		// Draw "Next: " in white
+		// Calculate where "Next: " ends
 		String label = "Next: ";
-		graphics.setColor(Color.WHITE);
-		graphics.drawString(label, baseX, baseY);
-		int x = baseX + metrics.stringWidth(label);
+		int labelWidth = metrics.stringWidth(label);
+		int x = baseX + labelWidth;
 		
 		// Draw each letter of the potion code in its color
 		for (char c : currentPotionCode.toCharArray()) {
