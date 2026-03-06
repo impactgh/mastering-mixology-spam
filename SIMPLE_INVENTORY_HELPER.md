@@ -20,12 +20,12 @@ The plugin helps you fill your inventory with the correct 27 potions in the righ
 
 ### The 27-Potion Layout
 
-The plugin expects this exact order (repeats 3 times for 3 stations):
+The plugin expects this exact order (MAL potions mixed in with each batch):
 
 ```
-Slots 0-8:   ALA, ALL, MMA, AAM, MLL, LLL, MML, MAL, MAL
-Slots 9-17:  ALA, ALL, MMA, AAM, MLL, LLL, MML, MAL, MAL
-Slots 18-26: ALA, ALL, MMA, AAM, MLL, LLL, MML, MAL, MAL
+Slots 0-8:   ALA, ALL, MMA, AAM, MLL, LLL, MML, MAL, MAL (Alembic)
+Slots 9-17:  ALA, ALL, MMA, AAM, MLL, LLL, MML, MAL, MAL (Agitator)
+Slots 18-26: ALA, ALL, MMA, AAM, MLL, LLL, MML, MAL, MAL (Retort)
 ```
 
 ### How to Use
@@ -37,7 +37,11 @@ Slots 18-26: ALA, ALL, MMA, AAM, MLL, LLL, MML, MAL, MAL
    - Slots 0-8 → Alembic
    - Slots 9-17 → Agitator
    - Slots 18-26 → Retort
-5. When all slots are green, spam the conveyor belt!
+5. **IMPORTANT**: After all 27 are processed, move all 6 MAL potions to slots 21-26
+   - The plugin will warn you: "MOVE 6 MAL TO SLOTS 21-26!"
+   - This prevents them from being used during conveyor spam
+   - Only proceed when the last 6 slots (21-26) are all green MAL potions
+6. When ready, spam the conveyor belt!
 
 ### Configuration
 

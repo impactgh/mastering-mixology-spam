@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class InventoryLayout {
 	
-	// The optimal order: repeats the pattern 3 times (once per station)
+	// The optimal order: MAL potions mixed in, but move them to slots 21-26 before conveyor
 	private static final PotionRecipe[] LAYOUT = {
 		// First set (will process at Alembic)
 		PotionRecipe.ALA,  // 0

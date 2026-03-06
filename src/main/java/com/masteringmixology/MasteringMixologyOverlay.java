@@ -111,12 +111,31 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 		if (unprocessed == 0 && processed > 0) {
 			// Check which station needs attention
 			String nextStation = null;
+			Color warningColor = Color.ORANGE;
+			
 			if (stationProcessed[0] == 9 && stationProcessed[1] < 9) {
 				nextStation = "AGITATOR";
 			} else if (stationProcessed[1] == 9 && stationProcessed[2] < 9) {
 				nextStation = "RETORT";
-			} else if (stationProcessed[2] == 9 && processed == 27) {
-				nextStation = "CONVEYOR BELT!";
+			} else if (processed == 27) {
+				// All potions processed, check if 6 MAL potions are in last 6 slots
+				int malInLastSlots = 0;
+				for (int i = 21; i < 27 && i < items.length; i++) {
+					if (items[i] != null && items[i].getId() != -1) {
+						PotionRecipe recipe = MixologyItemIDs.getRecipeFromItemId(items[i].getId());
+						if (recipe == PotionRecipe.MAL && MixologyItemIDs.isProcessed(items[i].getId())) {
+							malInLastSlots++;
+						}
+					}
+				}
+				
+				if (malInLastSlots < 6) {
+					nextStation = "MOVE 6 MAL TO SLOTS 21-26!";
+					warningColor = new Color(255, 165, 0); // Bright orange
+				} else {
+					nextStation = "CONVEYOR BELT!";
+					warningColor = Color.GREEN;
+				}
 			}
 			
 			if (nextStation != null) {
@@ -126,7 +145,7 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 				panelComponent.getChildren().add(LineComponent.builder()
 					.left(">>> GO TO:")
 					.right(nextStation)
-					.rightColor(nextStation.contains("CONVEYOR") ? Color.GREEN : Color.ORANGE)
+					.rightColor(warningColor)
 					.build());
 			}
 		}
