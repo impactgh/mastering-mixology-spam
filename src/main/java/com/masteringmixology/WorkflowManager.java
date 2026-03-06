@@ -57,53 +57,13 @@ public class WorkflowManager {
 	}
 
 	private void addMixingStepsForRecipe(PotionRecipe recipe) {
-		// Add lever pulls based on recipe requirements
-		// Each lever adds 10 paste, so we need to pull multiple times for recipes requiring more
-		
-		int moxPulls = recipe.getMoxAmount() / 10;
-		int agaPulls = recipe.getAgaAmount() / 10;
-		int lyePulls = recipe.getLyeAmount() / 10;
-
-		// Step 1: Mox lever pulls
-		for (int i = 0; i < moxPulls; i++) {
-			allSteps.add(new WorkflowStep(
-				WorkflowPhase.MIXING,
-				recipe,
-				null,
-				WorkflowStep.HighlightTarget.MOX_LEVER,
-				String.format("Pull Mox lever for %s (%d/%d)", recipe.getShortCode(), i + 1, moxPulls)
-			));
-		}
-
-		// Step 2: Aga lever pulls
-		for (int i = 0; i < agaPulls; i++) {
-			allSteps.add(new WorkflowStep(
-				WorkflowPhase.MIXING,
-				recipe,
-				null,
-				WorkflowStep.HighlightTarget.AGA_LEVER,
-				String.format("Pull Aga lever for %s (%d/%d)", recipe.getShortCode(), i + 1, agaPulls)
-			));
-		}
-
-		// Step 3: Lye lever pulls
-		for (int i = 0; i < lyePulls; i++) {
-			allSteps.add(new WorkflowStep(
-				WorkflowPhase.MIXING,
-				recipe,
-				null,
-				WorkflowStep.HighlightTarget.LYE_LEVER,
-				String.format("Pull Lye lever for %s (%d/%d)", recipe.getShortCode(), i + 1, lyePulls)
-			));
-		}
-
-		// Step 4: Take from mixing vessel
+		// Single step per potion - just "Make X potion"
 		allSteps.add(new WorkflowStep(
 			WorkflowPhase.MIXING,
 			recipe,
 			null,
 			WorkflowStep.HighlightTarget.MIXING_VESSEL,
-			String.format("Take %s from vessel", recipe.getShortCode())
+			String.format("Make %s potion", recipe.getShortCode())
 		));
 	}
 
@@ -138,7 +98,7 @@ public class WorkflowManager {
 
 	/**
 	 * Gets recipes in the order they should be made.
-	 * Priority: MAL first, then others.
+	 * Priority: MAL first, then others, alternating MMM/LLL.
 	 */
 	private List<PotionRecipe> getRecipesInOrder() {
 		List<PotionRecipe> recipes = new ArrayList<>();
@@ -149,16 +109,35 @@ public class WorkflowManager {
 		}
 
 		// Add other recipes (3 times each - 1 per station)
-		PotionRecipe[] otherRecipes = {
-			PotionRecipe.ALA, PotionRecipe.ALL, PotionRecipe.AAM,
-			PotionRecipe.MMA, PotionRecipe.MLL, PotionRecipe.MMM, PotionRecipe.MML
-		};
-
-		for (PotionRecipe recipe : otherRecipes) {
-			for (int i = 0; i < 3; i++) {
-				recipes.add(recipe);
-			}
-		}
+		// Alternate MMM and LLL to keep them balanced
+		recipes.add(PotionRecipe.ALA);
+		recipes.add(PotionRecipe.ALA);
+		recipes.add(PotionRecipe.ALA);
+		
+		recipes.add(PotionRecipe.ALL);
+		recipes.add(PotionRecipe.ALL);
+		recipes.add(PotionRecipe.ALL);
+		
+		recipes.add(PotionRecipe.AAM);
+		recipes.add(PotionRecipe.AAM);
+		recipes.add(PotionRecipe.AAM);
+		
+		recipes.add(PotionRecipe.MMA);
+		recipes.add(PotionRecipe.MMA);
+		recipes.add(PotionRecipe.MMA);
+		
+		recipes.add(PotionRecipe.MLL);
+		recipes.add(PotionRecipe.MLL);
+		recipes.add(PotionRecipe.MLL);
+		
+		// Alternate MMM and LLL
+		recipes.add(PotionRecipe.MMM);
+		recipes.add(PotionRecipe.LLL);
+		recipes.add(PotionRecipe.MMM);
+		
+		recipes.add(PotionRecipe.MML);
+		recipes.add(PotionRecipe.MML);
+		recipes.add(PotionRecipe.MML);
 
 		return recipes;
 	}

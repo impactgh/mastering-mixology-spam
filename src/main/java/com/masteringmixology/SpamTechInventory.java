@@ -15,13 +15,13 @@ public class SpamTechInventory {
 	private static final Map<PotionRecipe, Integer> TARGET_COUNTS = new HashMap<>();
 	
 	static {
-		TARGET_COUNTS.put(PotionRecipe.ALA, 3);  // 1 per station (was AAL - typo)
+		TARGET_COUNTS.put(PotionRecipe.ALA, 3);  // 1 per station
 		TARGET_COUNTS.put(PotionRecipe.ALL, 3);  // 1 per station
 		TARGET_COUNTS.put(PotionRecipe.AAM, 3);  // 1 per station
 		TARGET_COUNTS.put(PotionRecipe.MMA, 3);  // 1 per station
 		TARGET_COUNTS.put(PotionRecipe.MLL, 3);  // 1 per station
-		TARGET_COUNTS.put(PotionRecipe.MMM, 3);  // 1 per station (or LLL)
-		TARGET_COUNTS.put(PotionRecipe.LLL, 3);  // 1 per station (alternative to MMM)
+		TARGET_COUNTS.put(PotionRecipe.MMM, 2);  // Alternating with LLL
+		TARGET_COUNTS.put(PotionRecipe.LLL, 1);  // Alternating with MMM
 		TARGET_COUNTS.put(PotionRecipe.MML, 3);  // 1 per station
 		TARGET_COUNTS.put(PotionRecipe.MAL, 6);  // 2 per station (prioritized)
 	}

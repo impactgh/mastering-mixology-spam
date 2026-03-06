@@ -18,7 +18,7 @@ The spam tech method is an efficient strategy for Mastering Mixology discovered 
 - 3x AAM (Azure Aura Mix) - 1 per station
 - 3x MMA (Mystic Mana Amalgam) - 1 per station
 - 3x MLL (MegaLite Liquid) - 1 per station
-- 3x MMM or LLL - 1 per station
+- 2x MMM + 1x LLL (alternating for balance) - 1 per station
 - 3x MML (Marley's MoonLight) - 1 per station
 - 6x MAL (MixALot) - 2 per station (prioritized for best points)
 
