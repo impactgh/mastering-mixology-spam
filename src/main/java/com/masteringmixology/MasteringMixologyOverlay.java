@@ -19,6 +19,14 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 
 	private final Client client;
 	private final MasteringMixologyConfig config;
+	
+	// Colors for paste types (matching in-game colors)
+	private static final Color MOX_COLOR = new Color(100, 200, 255);  // Blue for Mox (M)
+	private static final Color AGA_COLOR = new Color(50, 255, 150);   // Green for Aga (A)
+	private static final Color LYE_COLOR = new Color(255, 100, 100);  // Red for Lye (L)
+	
+	private String currentPotionCode = null;
+	private int currentSlot = -1;
 
 	@Inject
 	private MasteringMixologyOverlay(Client client, MasteringMixologyConfig config) {
@@ -54,22 +62,19 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 		if (nextSlot >= 0 && nextSlot < 27) {
 			PotionRecipe nextPotion = InventoryLayout.getRecipeForSlot(nextSlot);
 			if (nextPotion != null) {
-				// Build colored text for the potion code
-				String potionCode = nextPotion.getShortCode();
-				StringBuilder coloredText = new StringBuilder();
+				currentPotionCode = nextPotion.getShortCode();
+				currentSlot = nextSlot;
 				
-				// Add each letter with a color marker
-				for (char c : potionCode.toCharArray()) {
-					coloredText.append(c);
-				}
-				
+				// Add placeholder line - we'll draw over it with colored text
 				panelComponent.getChildren().add(LineComponent.builder()
 					.left("Next:")
-					.right(String.format("%s (slot %d)", potionCode, nextSlot))
-					.rightColor(Color.YELLOW)
+					.right(String.format("%s (slot %d)", currentPotionCode, nextSlot))
+					.rightColor(new Color(0, 0, 0, 0)) // Transparent - we'll draw over it
 					.build());
 			}
 		} else {
+			currentPotionCode = null;
+			currentSlot = -1;
 			panelComponent.getChildren().add(LineComponent.builder()
 				.left("Status:")
 				.right("All 27 slots filled!")
@@ -156,7 +161,50 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 			}
 		}
 
-		return super.render(graphics);
+		Dimension panelDimension = super.render(graphics);
+		
+		// Draw colored potion code on top of the panel
+		if (currentPotionCode != null && currentSlot >= 0) {
+			drawColoredPotionCode(graphics);
+		}
+		
+		return panelDimension;
+	}
+	
+	private void drawColoredPotionCode(Graphics2D graphics) {
+		// Calculate position - after "Next: " text on the second line
+		int baseX = panelComponent.getBounds().x + 10; // Left padding
+		int baseY = panelComponent.getBounds().y + 30; // Title + one line
+		
+		FontMetrics metrics = graphics.getFontMetrics();
+		
+		// Draw "Next: " in white
+		String label = "Next: ";
+		graphics.setColor(Color.WHITE);
+		graphics.drawString(label, baseX, baseY);
+		int x = baseX + metrics.stringWidth(label);
+		
+		// Draw each letter of the potion code in its color
+		for (char c : currentPotionCode.toCharArray()) {
+			Color color = getColorForLetter(c);
+			graphics.setColor(color);
+			graphics.drawString(String.valueOf(c), x, baseY);
+			x += metrics.stringWidth(String.valueOf(c));
+		}
+		
+		// Draw slot number in gray
+		String slotText = String.format(" (slot %d)", currentSlot);
+		graphics.setColor(Color.GRAY);
+		graphics.drawString(slotText, x, baseY);
+	}
+	
+	private Color getColorForLetter(char letter) {
+		switch (letter) {
+			case 'M': return MOX_COLOR;  // Mox = Blue
+			case 'A': return AGA_COLOR;  // Aga = Green
+			case 'L': return LYE_COLOR;  // Lye = Red
+			default: return Color.WHITE;
+		}
 	}
 
 	private int getNextSlotToFill(Item[] items) {

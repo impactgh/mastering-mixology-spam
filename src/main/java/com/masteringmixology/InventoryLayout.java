@@ -10,6 +10,7 @@ import lombok.Getter;
 public class InventoryLayout {
 	
 	// The optimal order: MAL potions mixed in, but move them to slots 21-26 before conveyor
+	// Changed middle LLL to MMM for better balance
 	private static final PotionRecipe[] LAYOUT = {
 		// First set (will process at Alembic)
 		PotionRecipe.ALA,  // 0
@@ -17,7 +18,7 @@ public class InventoryLayout {
 		PotionRecipe.MMA,  // 2
 		PotionRecipe.AAM,  // 3
 		PotionRecipe.MLL,  // 4
-		PotionRecipe.LLL,  // 5
+		PotionRecipe.MMM,  // 5 - Changed from LLL
 		PotionRecipe.MML,  // 6
 		PotionRecipe.MAL,  // 7
 		PotionRecipe.MAL,  // 8
