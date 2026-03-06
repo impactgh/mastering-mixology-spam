@@ -94,7 +94,7 @@ Access the plugin settings in RuneLite's configuration panel:
 
 ## Current Status
 
-The plugin is **fully functional** for manual tracking! 
+The plugin is **fully functional** for manual tracking! Automatic inventory detection is ready to be enabled once item IDs are found.
 
 ### Working Features (No Setup Required)
 - ✅ Spam tech workflow guidance
@@ -106,24 +106,35 @@ The plugin is **fully functional** for manual tracking!
 - ✅ Side panel with potion buttons
 - ✅ In-game overlay
 
-### Features Requiring Setup
-- ⚙️ Automatic lever detection (needs varbit IDs)
+### Features Ready to Enable (Need Item IDs)
+- ⚙️ **Automatic inventory detection** - Scans your inventory and auto-updates progress
 - ⚙️ Object highlighting (needs object IDs)
 - ⚙️ Digweed notifications (needs object ID)
 - ⚙️ Region detection (needs region ID)
 
-See [DETECTION_SETUP.md](DETECTION_SETUP.md) for how to enable automatic detection.
+See [ITEM_ID_SETUP.md](ITEM_ID_SETUP.md) for how to enable automatic inventory detection.
 
-## How to Use (Manual Mode)
+## How to Use
+
+### Current Mode: Manual Tracking
 
 The plugin works great without any setup! Just follow the instructions:
 
 1. **Install & Run** the plugin
 2. **Open the side panel** - Find "Mastering Mixology Helper"
-3. **Follow the overlay** - It shows current phase and next step
-4. **Click "Next Step"** after each action (or use potion buttons)
-5. **Watch the progress** - Shows X/27 potions made
-6. **Spam conveyor** when it says "READY TO SUBMIT"!
+3. **Follow the overlay** - It shows "Make MAL potion"
+4. **Make the potion in-game** (pull levers, take from vessel)
+5. **Click "Next Step"** button in the panel (or click the MAL button)
+6. **Repeat** for all 27 potions
+7. **Spam conveyor** when it says "READY TO SUBMIT"!
+
+### Future Mode: Automatic Detection (Once Item IDs Found)
+
+With item IDs configured:
+1. Just make potions in-game
+2. Plugin automatically detects them in your inventory
+3. Progress updates in real-time
+4. No button clicking needed!
 
 The workflow guides you through the optimal order automatically.
 

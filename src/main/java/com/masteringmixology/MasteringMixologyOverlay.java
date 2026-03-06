@@ -1,6 +1,9 @@
 package com.masteringmixology;
 
 import net.runelite.api.Client;
+import net.runelite.api.InventoryID;
+import net.runelite.api.Item;
+import net.runelite.api.ItemContainer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
@@ -8,26 +11,30 @@ import net.runelite.client.ui.overlay.components.TitleComponent;
 
 import javax.inject.Inject;
 import java.awt.*;
-import java.util.List;
-import java.util.Map;
 
+/**
+ * Simple overlay showing next potion to make and progress counts.
+ */
 public class MasteringMixologyOverlay extends OverlayPanel {
 
 	private final Client client;
-	private final MasteringMixologyPlugin plugin;
 	private final MasteringMixologyConfig config;
 
 	@Inject
-	private MasteringMixologyOverlay(Client client, MasteringMixologyPlugin plugin, MasteringMixologyConfig config) {
+	private MasteringMixologyOverlay(Client client, MasteringMixologyConfig config) {
 		this.client = client;
-		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.TOP_LEFT);
 	}
 
 	@Override
 	public Dimension render(Graphics2D graphics) {
-		if (!config.showPotionTracker()) {
+		if (!config.showInventoryHelper()) {
+			return null;
+		}
+
+		ItemContainer inventory = client.getItemContainer(InventoryID.INVENTORY);
+		if (inventory == null) {
 			return null;
 		}
 
@@ -35,101 +42,80 @@ public class MasteringMixologyOverlay extends OverlayPanel {
 
 		// Title
 		panelComponent.getChildren().add(TitleComponent.builder()
-			.text("Mixology Spam Tech")
+			.text("Mixology Inventory")
 			.color(Color.CYAN)
 			.build());
 
-		WorkflowManager workflow = plugin.getWorkflowManager();
-		if (workflow == null) {
-			return super.render(graphics);
-		}
-
-		// Show current phase
-		WorkflowPhase phase = workflow.getCurrentPhase();
-		Color phaseColor = getPhaseColor(phase);
-
-		panelComponent.getChildren().add(LineComponent.builder()
-			.left("Phase:")
-			.right(phase.getDisplayName())
-			.rightColor(phaseColor)
-			.build());
-
-		// Show current step instruction
-		WorkflowStep currentStep = workflow.getCurrentStep();
-		if (currentStep != null) {
-			panelComponent.getChildren().add(LineComponent.builder()
-				.left("Next:")
-				.right(currentStep.getInstruction())
-				.rightColor(Color.YELLOW)
-				.build());
-		}
-
-		// Show progress
-		panelComponent.getChildren().add(LineComponent.builder()
-			.left("Progress:")
-			.right(workflow.getProgressString())
-			.rightColor(Color.WHITE)
-			.build());
-
-		panelComponent.getChildren().add(LineComponent.builder()
-			.left("")
-			.build());
-
-		// Show inventory progress
-		SpamTechInventory inventory = plugin.getSpamTechInventory();
-		panelComponent.getChildren().add(LineComponent.builder()
-			.left("Potions:")
-			.right(inventory.getTotalPotions() + " / 27")
-			.rightColor(inventory.isInventoryComplete() ? Color.GREEN : Color.WHITE)
-			.build());
-
-		// Show breakdown by recipe (compact)
-		if (config.showRecipeSuggestions()) {
-			panelComponent.getChildren().add(LineComponent.builder()
-				.left("")
-				.build());
-
-			panelComponent.getChildren().add(LineComponent.builder()
-				.left("Recipe Progress:")
-				.leftColor(Color.GRAY)
-				.build());
-
-			for (PotionRecipe recipe : PotionRecipe.values()) {
-				if (recipe == PotionRecipe.AAA) continue;
-
-				int current = inventory.getTotalCount(recipe);
-				int target = inventory.getTargetCount(recipe);
-				
-				if (target == 0) continue;
-
-				Color countColor = current >= target ? Color.GREEN : Color.WHITE;
-				String display = String.format("%d/%d", current, target);
-
+		Item[] items = inventory.getItems();
+		
+		// Find next slot to fill
+		int nextSlot = getNextSlotToFill(items);
+		
+		if (nextSlot >= 0 && nextSlot < 27) {
+			PotionRecipe nextPotion = InventoryLayout.getRecipeForSlot(nextSlot);
+			if (nextPotion != null) {
 				panelComponent.getChildren().add(LineComponent.builder()
-					.left("  " + recipe.getShortCode())
-					.right(display)
-					.rightColor(countColor)
+					.left("Next:")
+					.right(String.format("%s (slot %d)", nextPotion.getShortCode(), nextSlot))
+					.rightColor(Color.YELLOW)
 					.build());
 			}
+		} else {
+			panelComponent.getChildren().add(LineComponent.builder()
+				.left("Status:")
+				.right("All 27 slots filled!")
+				.rightColor(Color.GREEN)
+				.build());
 		}
+
+		// Count processed vs unprocessed
+		int processed = 0;
+		int unprocessed = 0;
+		
+		for (int i = 0; i < 27 && i < items.length; i++) {
+			if (items[i] == null || items[i].getId() == -1) {
+				continue;
+			}
+			
+			int itemId = items[i].getId();
+			if (MixologyItemIDs.isMixologyPotion(itemId)) {
+				if (MixologyItemIDs.isProcessed(itemId)) {
+					processed++;
+				} else {
+					unprocessed++;
+				}
+			}
+		}
+
+		panelComponent.getChildren().add(LineComponent.builder()
+			.left("Processed:")
+			.right(processed + " / 27")
+			.rightColor(processed == 27 ? Color.GREEN : Color.WHITE)
+			.build());
+
+		panelComponent.getChildren().add(LineComponent.builder()
+			.left("Unprocessed:")
+			.right(String.valueOf(unprocessed))
+			.rightColor(unprocessed > 0 ? Color.YELLOW : Color.GRAY)
+			.build());
 
 		return super.render(graphics);
 	}
 
-	private Color getPhaseColor(WorkflowPhase phase) {
-		switch (phase) {
-			case MIXING:
-				return Color.CYAN;
-			case PROCESSING_ALEMBIC:
-			case PROCESSING_AGITATOR:
-			case PROCESSING_RETORT:
-				return Color.ORANGE;
-			case READY_TO_SUBMIT:
-				return Color.GREEN;
-			case COMPLETE:
-				return Color.GRAY;
-			default:
-				return Color.WHITE;
+	private int getNextSlotToFill(Item[] items) {
+		for (int i = 0; i < 27; i++) {
+			PotionRecipe expected = InventoryLayout.getRecipeForSlot(i);
+			if (expected == null) continue;
+
+			if (i >= items.length || items[i] == null || items[i].getId() == -1) {
+				return i;
+			}
+
+			PotionRecipe actual = MixologyItemIDs.getRecipeFromItemId(items[i].getId());
+			if (actual != expected) {
+				return i;
+			}
 		}
+		return -1;
 	}
 }
