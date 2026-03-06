@@ -14,8 +14,8 @@ public class MixologyItemIDs {
 	public static final int LLL_UNFINISHED = 30017; // LipLack Liquor
 	public static final int MML_UNFINISHED = 30013; // Marley's MoonLight
 	public static final int MAL_UNFINISHED = 30020; // MixALot
-	public static final int MMM_UNFINISHED = 30014; // Mammoth-Might Mix
-	public static final int AAA_UNFINISHED = 30011; // Alco-AugmentAtor
+	public static final int MMM_UNFINISHED = 30011; // Mammoth-Might Mix
+	public static final int AAA_UNFINISHED = 30014; // Alco-AugmentAtor
 	
 	// Processed potions (after any station - same ID for all 3 stations)
 	public static final int ALA_PROCESSED = 30025;
@@ -26,8 +26,8 @@ public class MixologyItemIDs {
 	public static final int LLL_PROCESSED = 30027;
 	public static final int MML_PROCESSED = 30023;
 	public static final int MAL_PROCESSED = 30030;
-	public static final int MMM_PROCESSED = 30024;
-	public static final int AAA_PROCESSED = 30021;
+	public static final int MMM_PROCESSED = 30021;
+	public static final int AAA_PROCESSED = 30024;
 	
 	/**
 	 * Gets the recipe from an item ID.
